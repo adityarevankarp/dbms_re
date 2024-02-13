@@ -1,0 +1,31 @@
+/* PropertyList.css */
+
+.property-list {
+    margin: 20px;
+  }
+  
+  .property-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .property-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: 300px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .property-card h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+  }
+  
+  .property-card p {
+    margin: 5px 0;
+  }
+  
+  /* Add more styling as needed */
+  
