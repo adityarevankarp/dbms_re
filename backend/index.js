@@ -54,6 +54,32 @@ const createTablesQueries = [
       transaction_date DATE
     );`
   ];
+  let appointments = [];
+
+// Endpoint to book an appointment
+app.post('/appointments', (req, res) => {
+  try {
+    const { propertyId, customerId, agentId, date } = req.body;
+
+    // Create a new appointment object
+    const newAppointment = {
+      appointmentId: appointments.length + 1, // Generate a unique ID
+      propertyId,
+      customerId,
+      agentId,
+      date
+    };
+
+    // Add the appointment to the appointments array
+    appointments.push(newAppointment);
+
+    // Return the newly created appointment
+    res.status(201).json(newAppointment);
+  } catch (error) {
+    console.error('Error booking appointment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
   app.put('/properties/:id', async (req, res) => {
     try {
       const id = req.params.id;
@@ -163,6 +189,34 @@ const createTablesQueries = [
       res.json(result.rows[0]);
     } catch (error) {
       console.error('Error registering agent:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  let apmnts = [
+    { appointmentId: 1, propertyId: 1, customerId: 1, agentId: 1, date: '2024-02-15' },
+    { appointmentId: 2, propertyId: 2, customerId: 2, agentId: 2, date: '2024-02-16' },
+    { appointmentId: 3, propertyId: 3, customerId: 3, agentId: 3, date: '2024-02-17' }
+  ];
+  
+  app.post('/appointments', async (req, res) => {
+    try {
+      const { propertyId, customerId, agentId, date } = req.body;
+  
+      // Construct the SQL query to insert the appointment data
+      const query = `
+        INSERT INTO appointments (property_id, customer_id, agent_id, date)
+        VALUES ($1, $2, $3, $4)
+        RETURNING *;
+      `;
+      const values = [propertyId, customerId, agentId, date];
+  
+      // Execute the SQL query
+      const result = await client.query(query, values);
+  
+      // Return the newly created appointment
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error('Error booking appointment:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });

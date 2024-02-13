@@ -1,5 +1,6 @@
 import './App.css'
 import AgentRegistrationForm from './Pages/AgentRegistrationForm'
+import Appointments from './Pages/Appointments'
 import CustomerRegistrationForm from './Pages/CustomerRegistrationForm'
 import PropertyForm from './Pages/PropertyForm'
 import PropertyList from './Pages/PropertyList'
@@ -17,6 +18,7 @@ function App() {
       <PropertyList/>
       <PropertyForm/>
       <AgentRegistrationForm/>
+      <Appointments/>
     </>
   )
 }
