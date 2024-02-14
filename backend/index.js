@@ -171,7 +171,21 @@ app.post('/appointments', (req, res) => {
       await client.end();
     }
   });
-  
+  app.get('/properties/search', async (req, res) => {
+    const { id } = req.query;
+    try {
+      const query = 'SELECT * FROM property WHERE property_id = $1';
+      const result = await client.query(query, [id]);
+      if (result.rows.length > 0) {
+        res.status(200).json(result.rows);
+      } else {
+        res.status(404).json({ message: 'Property not found' });
+      }
+    } catch (error) {
+      console.error('Error searching property:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
   app.post('/agents', async (req, res) => {
     try {
       const { name, contactInformation, expertise, transactionHistory } = req.body;
@@ -202,9 +216,9 @@ app.post('/appointments', (req, res) => {
     try {
       const { propertyId, customerId, agentId, date } = req.body;
   
-      // Construct the SQL query to insert the appointment data
+      // SQL query to insert the appointment into the database
       const query = `
-        INSERT INTO appointments (property_id, customer_id, agent_id, date)
+        INSERT INTO appointment (property_id, customer_id, agent_id, appointment_date)
         VALUES ($1, $2, $3, $4)
         RETURNING *;
       `;
@@ -217,6 +231,23 @@ app.post('/appointments', (req, res) => {
       res.status(201).json(result.rows[0]);
     } catch (error) {
       console.error('Error booking appointment:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  app.get('/appointments', async (req, res) => {
+    try {
+      // SQL query to fetch all appointments
+      const query = `
+        SELECT * FROM appointment;
+      `;
+  
+      // Execute the SQL query
+      const result = await client.query(query);
+  
+      // Return the list of appointments
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
