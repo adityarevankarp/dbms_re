@@ -12,6 +12,7 @@ function Appointments() {
     try {
       const response = await fetch('http://localhost:4000/appointments');
       const data = await response.json();
+      console.log(data);
       setAppointments(data);
     } catch (error) {
       console.error('Error fetching appointments:', error);
@@ -33,12 +34,12 @@ function Appointments() {
         </thead>
         <tbody>
           {appointments.map(appointment => (
-            <tr key={appointment.appointmentId}>
-              <td>{appointment.appointmentId}</td>
-              <td>{appointment.propertyId}</td>
-              <td>{appointment.customerId}</td>
-              <td>{appointment.agentId}</td>
-              <td>{appointment.date}</td>
+            <tr key={appointment.appointment_id}>
+              <td>{appointment.appointment_id}</td>
+              <td>{appointment.property_id}</td>
+              <td>{appointment.customer_id}</td>
+              <td>{appointment.agent_id}</td>
+              <td>{appointment.appointment_date}</td>
             </tr>
           ))}
         </tbody>

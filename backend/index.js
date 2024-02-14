@@ -57,26 +57,47 @@ const createTablesQueries = [
   let appointments = [];
 
 // Endpoint to book an appointment
-app.post('/appointments', (req, res) => {
+app.post('/appointments', async (req, res) => {
   try {
-    const { propertyId, customerId, agentId, date } = req.body;
+    const { property_id, customer_id, agent_id, appointment_date } = req.body;
 
-    // Create a new appointment object
-    const newAppointment = {
-      appointmentId: appointments.length + 1, // Generate a unique ID
-      propertyId,
-      customerId,
-      agentId,
-      date
-    };
+    // SQL query to insert the appointment into the appointment table
+    const query = `
+      INSERT INTO appointment (property_id, customer_id, agent_id, appointment_date)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `;
+    const values = [property_id, customer_id, agent_id, appointment_date];
 
-    // Add the appointment to the appointments array
-    appointments.push(newAppointment);
+    // Execute the SQL query
+    const result = await client.query(query, values);
 
     // Return the newly created appointment
-    res.status(201).json(newAppointment);
+    res.status(201).json(result.rows[0]);
   } catch (error) {
     console.error('Error booking appointment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+app.get('/appointments', async (req, res) => {
+  try {
+    // Ensure the client is connected to the database
+    if (!client._connected) {
+      await client.connect();
+    }
+
+    // SQL query to fetch all appointments
+    const query = `
+      SELECT * FROM appointment;
+    `;
+
+    // Execute the SQL query
+    const result = await client.query(query);
+
+    // Return the list of appointments
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
@@ -247,45 +268,45 @@ app.post('/appointments', (req, res) => {
     { appointmentId: 3, propertyId: 3, customerId: 3, agentId: 3, date: '2024-02-17' }
   ];
   
-  app.post('/appointments', async (req, res) => {
-    try {
-      const { propertyId, customerId, agentId, date } = req.body;
+  // app.post('/appointments', async (req, res) => {
+  //   try {
+  //     const { propertyId, customerId, agentId, date } = req.body;
   
-      // SQL query to insert the appointment into the database
-      const query = `
-        INSERT INTO appointment (property_id, customer_id, agent_id, appointment_date)
-        VALUES ($1, $2, $3, $4)
-        RETURNING *;
-      `;
-      const values = [propertyId, customerId, agentId, date];
+  //     // SQL query to insert the appointment into the database
+  //     const query = `
+  //       INSERT INTO appointment (property_id, customer_id, agent_id, appointment_date)
+  //       VALUES ($1, $2, $3, $4)
+  //       RETURNING *;
+  //     `;
+  //     const values = [propertyId, customerId, agentId, date];
   
-      // Execute the SQL query
-      const result = await client.query(query, values);
+  //     // Execute the SQL query
+  //     const result = await client.query(query, values);
   
-      // Return the newly created appointment
-      res.status(201).json(result.rows[0]);
-    } catch (error) {
-      console.error('Error booking appointment:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-  app.get('/appointments', async (req, res) => {
-    try {
-      // SQL query to fetch all appointments
-      const query = `
-        SELECT * FROM appointment;
-      `;
+  //     // Return the newly created appointment
+  //     res.status(201).json(result.rows[0]);
+  //   } catch (error) {
+  //     console.error('Error booking appointment:', error);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   }
+  // });
+  // app.get('/appointments', async (req, res) => {
+  //   try {
+  //     // SQL query to fetch all appointments
+  //     const query = `
+  //       SELECT * FROM appointment;
+  //     `;
   
-      // Execute the SQL query
-      const result = await client.query(query);
+  //     // Execute the SQL query
+  //     const result = await client.query(query);
   
-      // Return the list of appointments
-      res.json(result.rows);
-    } catch (error) {
-      console.error('Error fetching appointments:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
+  //     // Return the list of appointments
+  //     res.json(result.rows);
+  //   } catch (error) {
+  //     console.error('Error fetching appointments:', error);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   }
+  // });
   app.post('/properties', async (req, res) => {
     try {
       const { type, location, size, price, availability, agentId } = req.body;

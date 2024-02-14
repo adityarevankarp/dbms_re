@@ -45,11 +45,11 @@ function PropertyList() {
   };
   
   
-  const handleBookAppointment = async (propertyId) => {
+  const handleBookAppointment = async (property_id) => {
     // Implement logic to open appointment booking form
-    const customerId = prompt('Enter Customer ID:');
-    const agentId = prompt('Enter Agent ID:');
-    const date = new Date().toISOString(); // Get current date in ISO format
+    const customer_id = prompt('Enter Customer ID:');
+    const agent_id = prompt('Enter Agent ID:');
+    const appointment_date = new Date().toISOString(); // Get current date in ISO format
 
     try {
       const response = await fetch('http://localhost:4000/appointments', {
@@ -57,7 +57,7 @@ function PropertyList() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ propertyId, customerId, agentId, date })
+        body: JSON.stringify({ property_id, customer_id, agent_id,  appointment_date })
       });
       const data = await response.json();
       console.log('Appointment booked:', data);
@@ -164,8 +164,8 @@ function PropertyList() {
                     </div>
                     </div>
                     {/* Add input fields for other property details (location, size, price, availability) */}
-                    
-                    <button className="btn btn-primary" onClick={() => handleBookAppointment(property.property_id)}>Book an Appointment</button>
+                    <button className="btn btn-info" onClick={() => handleUpdateProperty(property.property_id)}>Update</button>
+                    {/* <button className="btn btn-primary" onClick={() => handleBookAppointment(property.property_id)}>Book an Appointment</button> */}
                   </form>
                 </div>
               ) : (
