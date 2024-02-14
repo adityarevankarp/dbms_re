@@ -7,6 +7,7 @@ import PropertyList from './Pages/PropertyList'
 // index.js
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PropertySearch from './Pages/PropertySearch'
+import TransactionList from './Pages/TransactionList'
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <PropertyForm/>
       <AgentRegistrationForm/>
       <Appointments/>
+      <TransactionList/>
       
     </>
   )

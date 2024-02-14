@@ -1,5 +1,5 @@
 const express = require('express');
-const { Client,pool } = require('pg');
+const { Client, pool } = require('pg');
 const cors = require('cors')
 const bodyParser = require('body-parser');
 const app = express();
@@ -120,6 +120,41 @@ app.post('/appointments', (req, res) => {
       res.json(result.rows[0]);
     } catch (error) {
       console.error('Error registering customer:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  app.post('/transactions', async (req, res) => {
+    try {
+      const { propertyId, customerId, agentId } = req.body;
+  
+      // Execute SQL query to insert transaction into the database
+      const query = `
+        INSERT INTO transaction (property_id, customer_id, agent_id)
+        VALUES ($1, $2, $3)
+        RETURNING *;
+      `;
+      const values = [propertyId, customerId, agentId];
+      const result = await client.query(query, values);
+  
+      // Return the newly created transaction
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error('Error creating transaction:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  app.get('/transactions', async (req, res) => {
+    try {
+      // Query to fetch all transactions from the database
+      const query = 'SELECT * FROM transaction';
+  
+      // Execute the query
+      const { rows } = await client.query(query);
+  
+      // Return the fetched transactions as JSON response
+      res.json(rows);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });

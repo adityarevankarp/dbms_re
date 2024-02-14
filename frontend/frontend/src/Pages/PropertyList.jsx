@@ -110,7 +110,28 @@ function PropertyList() {
       console.error('Error updating property:', error);
     }
   };
-
+  const handleBuyNow = async (propertyId) => {
+    const customerId = prompt('Enter Customer ID:');
+    const agentId = prompt('Enter Agent ID:');
+    if (customerId && agentId) {
+      try {
+        const response = await fetch('http://localhost:4000/transactions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ propertyId, customerId, agentId })
+        });
+        if (response.ok) {
+          console.log('Transaction successful');
+        } else {
+          console.error('Failed to create transaction');
+        }
+      } catch (error) {
+        console.error('Error creating transaction:', error);
+      }
+    }
+  };
   return (
     <div className="container mt-5">
       <h2>Properties Available</h2>
@@ -143,6 +164,7 @@ function PropertyList() {
                     </div>
                     </div>
                     {/* Add input fields for other property details (location, size, price, availability) */}
+                    
                     <button className="btn btn-primary" onClick={() => handleBookAppointment(property.property_id)}>Book an Appointment</button>
                   </form>
                 </div>
@@ -156,6 +178,7 @@ function PropertyList() {
                   <button className="btn btn-primary" onClick={() => handleBookAppointment(property.property_id)}>Book an Appointment</button>
                   <button className="btn btn-info" onClick={() => handleUpdateProperty(property.property_id)}>Update</button>
                   <button className="btn btn-danger" onClick={() => handleDeleteProperty(property.property_id)}>Delete</button>
+                  <button className="btn btn-primary" onClick={() => handleBuyNow(property.property_id)}>Buy Now</button>
                 </div>
               )}
             </div>
