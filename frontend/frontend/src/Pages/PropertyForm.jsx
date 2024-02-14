@@ -9,7 +9,7 @@ function PropertyForm() {
     availability: '',
     agentId: '' // New field for agent ID
   });
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
